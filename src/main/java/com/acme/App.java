@@ -32,15 +32,20 @@ public class App {
     }
 
     private static void publishTemperature(MqttAsyncClient myClient) throws MqttException {
-        int min = 5;
-        int max = 55;
-        int temperature = ThreadLocalRandom.current().nextInt(min, max + 1);
+        double min = 5;
+        double max = 55;
+        double temperature = ThreadLocalRandom.current().nextDouble(min, max + 1);
 
-        MqttMessage message = new MqttMessage(String.valueOf(temperature).getBytes());
+        MqttMessage message = new MqttMessage(String.valueOf(roundAvoid(temperature, 2)).getBytes());
         message.setQos(0);
 
         String topic = "hska/avg/temperature2";
         myClient.publish(topic, message);
+    }
+
+    public static double roundAvoid(double value, int places) {
+        double scale = Math.pow(10, places);
+        return Math.round(value * scale) / scale;
     }
 
 }
